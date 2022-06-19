@@ -1,9 +1,33 @@
-//'use strict';
+'use strict';
 
 const textToType = [
     'Click on the area below to start the game.',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique quam in nibh iaculis, vitae pulvinar quam consectetur. Sed fermentum efficitur commodo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce turpis felis, dapibus sit amet mattis eget, malesuada ac diam. Praesent ut sem nec leo fermentum mollis. Aliquam blandit dignissim nisl. Proin leo lectus, vestibulum sed velit ac, finibus placerat eros. Suspendisse lacinia, massa et venenatis tincidunt, neque nisi consectetur lacus, nec tempus dolor lectus in lectus. Donec bibendum aliquam leo, vel aliquam nunc luctus at.',
-    'A journey of a thousand miles starts with a single step.'
+    'A journey of a thousand miles starts with a single step.',
+    `Two roads diverged in a yellow wood,
+    And sorry I could not travel both
+    And be one traveler, long I stood
+    And looked down one as far as I could
+    To where it bent in the undergrowth;
+    
+    Then took the other, as just as fair,
+    And having perhaps the better claim,
+    Because it was grassy and wanted wear;
+    Though as for that the passing there
+    Had worn them really about the same,
+    
+    And both that morning equally lay
+    In leaves no step had trodden black.
+    Oh, I kept the first for another day!
+    Yet knowing how way leads on to way,
+    I doubted if I should ever come back.
+    
+    I shall be telling this with a sigh
+    Somewhere ages and ages hence:
+    Two roads diverged in a wood, and
+    I took the one less traveled by,
+    And that has made all the difference.`,
+    'The Great Hall looked its usual splendid self, decorated for the start-of-term feast. Golden plates and goblets gleamed by the light of hundreds and hundreds of candles, floating over the tables in mid-air.'
 ];
 
 const times = {
@@ -21,25 +45,59 @@ textInput.addEventListener('click', startGame);
 const resetBtn = document.getElementById('reset-btn');
 resetBtn.addEventListener('click', resetGame);
 
+const infoFlex = document.getElementById('info-flex');
 const textCard = document.querySelector('.text-card');
 
 const timeCard = document.querySelector('#time .info');
 const errorCard = document.querySelector('#errors .info');
 const accuracyCard = document.querySelector('#accuracy .info');
 
+// CPM Node
+const charsNode = document.createElement("div");
+charsNode.setAttribute('id', 'cpm');
+charsNode.setAttribute('class', "info-card info-bg shadow");
+
+const charsTitle = document.createElement('h2');
+charsTitle.setAttribute('class', "info-title");
+charsTitle.innerText = "CPM";
+charsNode.appendChild(charsTitle);
+
+const charsInfo = document.createElement('div');
+charsInfo.setAttribute('class', "info");
+charsNode.appendChild(charsInfo);
+
+// WPM Node
+const wordsNode = document.createElement("div");
+wordsNode.setAttribute('id', 'wpm');
+wordsNode.setAttribute('class', "info-card info-bg shadow");
+
+const wordsTitle = document.createElement('h2');
+wordsTitle.setAttribute('class', "info-title");
+wordsTitle.innerText = "WPM";
+wordsNode.appendChild(wordsTitle);
+
+const wordsInfo = document.createElement('div');
+wordsInfo.setAttribute('class', "info");
+wordsNode.appendChild(wordsInfo);
+
 let intervalRef;
-let text = textToType[2];
+let text = textToType[4];
 let words = 0;
 let characters = 0;
 
 function startGame(event) {
-    console.log(intervalRef);
     if (currentTime <= 0 || intervalRef)
         return;
 
     textCard.innerText = text;
-    textInput.style.height = textCard.scrollHeight + 'px';
-    textInput.style.width = textCard.scrollWidth + 'px';
+
+    if (textCard.scrollHeight <= 250) {
+        textInput.style.height = textCard.scrollHeight + 'px';
+        textInput.style.width = textCard.scrollWidth + 'px';
+    } else {
+        textInput.style.height = '250px';
+        textInput.style.width = '75%';
+    }
 
     textInput.addEventListener('input', playGame);
     intervalRef = setInterval(countdownToZero, 1000);
@@ -63,10 +121,12 @@ function playGame(event) {
         return;
 
     let htmlText = textValue.substring(0, textLength);
-    words = htmlText.split(' ').length;
+
+    const trimmedHTMLText = htmlText.trim();
+    words = trimmedHTMLText.split(' ').length;
+    characters = trimmedHTMLText.split('').length;
 
     htmlText = htmlText.split('');
-    characters = htmlText.length;
 
     htmlText = htmlText.map((char, index) => {
         if (char.toLowerCase() !== value[index].toLowerCase()) {
@@ -77,7 +137,7 @@ function playGame(event) {
         return `<span class='correct'>${char}</span>`;
     });
 
-    accuracy = Math.round(((textLength - errors) / textLength) * 100);
+    accuracy = Math.round(((textLength - errors) / textValue.length) * 100);
 
     htmlText = htmlText.join("");
     textValue = htmlText + textValue.substring(textLength);
@@ -100,9 +160,17 @@ function countdownToZero() {
 }
 
 function finishGame() {
-    textCard.innerText = `WPM = ${words}; CPM = ${characters}
-    Click on Reset to start a New Game`;
+    textCard.innerText = "Click on Reset to start a New Game";
     textInput.disabled = true;
+
+    infoFlex.insertBefore(charsNode, infoFlex.firstChild);
+    infoFlex.insertBefore(wordsNode, infoFlex.firstChild);
+
+    const charsCard = document.querySelector("#cpm .info");
+    charsCard.innerText = characters;
+
+    const wordsCard = document.querySelector("#wpm .info");
+    wordsCard.innerText = words;
 }
 
 function resetGame() {
@@ -110,6 +178,7 @@ function resetGame() {
     textCard.innerText = textToType[0];
     errorCard.innerText = '0';
     accuracyCard.innerText = '100';
+    timeCard.innerText = Math.floor(selectedTime / 1000);
     textInput.value = '';
     
     textInput.disabled = false;
@@ -118,4 +187,6 @@ function resetGame() {
     intervalRef = null;
 
     resetBtn.classList.add('invisible');
+    infoFlex.removeChild(charsNode);
+    infoFlex.removeChild(wordsNode);
 }
