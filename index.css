@@ -4,8 +4,9 @@
 
 html, body {
     min-height: 100%;
-    background: #fff;
-    color: #000;
+    height: 100%;
+    background: #EEE;
+    color: #111;
 }
 
 /* sets the body height of the browser, so that backgrounds and div heights work correctly. Color and background will almost certainly be altered; they are just placeholders */
@@ -29,7 +30,7 @@ footer, header, nav, section, video {
 /* ensures that older browsers will display HTML5 elements correctly */
 
 h1 {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
 }
 
 /* begins to set up font sizes relative to base rem – h1 has been used as an example */
@@ -125,6 +126,7 @@ sub, sup {
     height: 100%;
     max-height: 100%;
     padding: 30px;
+    position: relative;
 }
 
 header {
@@ -138,10 +140,15 @@ header {
     align-items: center;
 }
 
+.container #difficulty {
+    position: absolute;
+    bottom: 0px;
+    right: 15px;
+}
+
 .flex-row {
     max-width: 100%;
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
@@ -186,6 +193,13 @@ header {
     padding: 0.9rem;
 }
 
+.selector {
+    margin: 1rem;
+    padding: 0.9rem;
+    width: 135px;
+    border-radius: 5%;
+}
+
 .shadow {
     box-shadow: 3px 3px 6px;
 }
@@ -203,5 +217,13 @@ header {
 }
 
 .correct {
-    color:aquamarine;
+    color:#3f3;
+}
+
+#reset-btn {
+    padding: 0.6rem;
+    margin: 1rem;
+    background-color:#FAA;
+    border-radius: 10%;
+    cursor:pointer;
 }

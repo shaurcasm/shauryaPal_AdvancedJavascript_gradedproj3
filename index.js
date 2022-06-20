@@ -27,7 +27,7 @@ const textToType = [
     Two roads diverged in a wood, and
     I took the one less traveled by,
     And that has made all the difference.`,
-    'The Great Hall looked its usual splendid self, decorated for the start-of-term feast. Golden plates and goblets gleamed by the light of hundreds and hundreds of candles, floating over the tables in mid-air.'
+    "Raindrops the size of bullets thundered on the castle windows for days on end; the lake rose, the flower beds turned into muddy streams, and Hagrid's pumpkins swelled to the size of garden sheds. Oliver Wood's enthusiasm for regular training sessions, however, was not dampened, which was why Harry was to be found, late one stormy Saturday afternoon a few days before Halloween, returning to Gryffindor Tower, drenched to the skin and splattered with mud.",
 ];
 
 const times = {
@@ -36,7 +36,14 @@ const times = {
     FIVE_MINUTES: 5 * 60 * 1000,
 };
 
-let selectedTime = times.ONE_MINUTE;
+const diffChoices = {
+    SENTENCE: 'sentence',
+    PARAGRAPH: 'paragraph',
+    POEM: 'poem',
+    LOREM_IPSUM: 'lorem-ipsum',
+};
+
+const selectedTime = times.ONE_MINUTE;
 let currentTime = selectedTime;   // This countsdown from selected duration
 
 const textInput = document.getElementById('text-input');
@@ -45,8 +52,12 @@ textInput.addEventListener('click', startGame);
 const resetBtn = document.getElementById('reset-btn');
 resetBtn.addEventListener('click', resetGame);
 
+const difficultySlt = document.getElementById('difficulty');
+difficultySlt.addEventListener('input', selectDifficulty);
+
 const infoFlex = document.getElementById('info-flex');
 const textCard = document.querySelector('.text-card');
+const textContainer = document.querySelector('.text-container');
 
 const timeCard = document.querySelector('#time .info');
 const errorCard = document.querySelector('#errors .info');
@@ -81,9 +92,36 @@ wordsInfo.setAttribute('class', "info");
 wordsNode.appendChild(wordsInfo);
 
 let intervalRef;
-let text = textToType[4];
+let text = textToType[2];
 let words = 0;
 let characters = 0;
+
+function selectDifficulty(event) {
+    const choice = event.target.value;
+    textContainer.classList.remove('flex-row');
+
+    switch(choice) {
+        case diffChoices.SENTENCE:
+            text = textToType[2];
+            break;
+
+        case diffChoices.POEM:
+            text = textToType[3];
+            textContainer.classList.add('flex-row');
+            break;
+
+        case diffChoices.PARAGRAPH:
+            text = textToType[4]
+            break;
+
+        case diffChoices.LOREM_IPSUM:
+            text = textToType[1];
+            break;
+
+        default:
+            text = textToType[0];
+    }
+}
 
 function startGame(event) {
     if (currentTime <= 0 || intervalRef)
@@ -91,13 +129,8 @@ function startGame(event) {
 
     textCard.innerText = text;
 
-    if (textCard.scrollHeight <= 250) {
-        textInput.style.height = textCard.scrollHeight + 'px';
-        textInput.style.width = textCard.scrollWidth + 'px';
-    } else {
-        textInput.style.height = '250px';
-        textInput.style.width = '75%';
-    }
+    textInput.style.height = textCard.scrollHeight + 'px';
+    textInput.style.width = textCard.scrollWidth + 'px';
 
     textInput.addEventListener('input', playGame);
     intervalRef = setInterval(countdownToZero, 1000);

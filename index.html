@@ -29,12 +29,20 @@
                     <div class="info">100</div>
                 </div>
             </div>
-            <div class="text-card info-bg shadow">
-                Click on the area below to start the game.
+            <div class="text-container">
+                <div class="text-card info-bg shadow">
+                    Click on the area below to start the game.
+                </div>
+                <textarea id="text-input" rows="4" cols="60" placeholder="Start typing here..." class="notepad input-bg shadow"></textarea>
             </div>
-            <textarea id="text-input" rows="4" cols="60" placeholder="Start typing here..." class="notepad input-bg shadow"></textarea>
-            <button id="reset-btn" type="button" class="invisible">Reset</button>
+            <button id="reset-btn" class="invisible">Reset</button>
         </section>
+        <select id="difficulty" class="selector">
+            <option value="sentence">Sentence</option>
+            <option value="paragraph">Paragraph</option>
+            <option value="poem">Poem</option>
+            <option value="lorem-ipsum">Lorem Ipsum</option>
+        </select>
     </div>
 
 
